@@ -128,6 +128,15 @@
     var siguiente = actual === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = siguiente;
     localStorage.setItem("tema", siguiente);
+
+    // Si hay comentarios de Giscus en la página, avisarle del cambio de tema
+    // (su iframe no puede leer localStorage del sitio por sí solo).
+    var iframeGiscus = document.querySelector("iframe.giscus-frame");
+    if (iframeGiscus) {
+      iframeGiscus.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: siguiente } } }, "https://giscus.app"
+      );
+    }
   });
 </script>
 {% block grafico_destacado %}{% endblock %}
