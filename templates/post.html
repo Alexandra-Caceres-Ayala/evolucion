@@ -29,33 +29,31 @@
   {% endif %}
 </article>
 {% if es_anuncio %}<script src="{{ raiz }}static/nodos.js" defer></script>{% endif %}
-<!--
-  Comentarios (Giscus / GitHub Discussions) — listo para activar.
-  Pasos pendientes en giscus.app, uno por uno:
-    1. El repo debe ser público en GitHub y tener Discussions activado
-       (Settings del repo -> Features -> Discussions).
-    2. Instalar la app de Giscus en el repo: https://github.com/apps/giscus
-    3. Rellenar el formulario en https://giscus.app con el repo y copiar
-       los valores data-repo-id / data-category-id que genera.
-    4. Descomentar el <script> de abajo y pegar esos valores.
--->
-<!--
 <section class="comentarios">
-  <script src="https://giscus.app/client.js"
-    data-repo="ALEXANDRA/REPO-PENDIENTE"
-    data-repo-id="PENDIENTE"
-    data-category="Comentarios"
-    data-category-id="PENDIENTE"
-    data-mapping="pathname"
-    data-strict="0"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="preferred_color_scheme"
-    data-lang="es"
-    crossorigin="anonymous"
-    async>
+  <script>
+    (function () {
+      // El tema inicial de giscus debe coincidir con el interruptor propio del
+      // sitio (guardado en localStorage), no con la preferencia del sistema
+      // operativo -- si no, podrían no coincidir entre sí.
+      var tema = document.documentElement.dataset.theme ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      var s = document.createElement("script");
+      s.src = "https://giscus.app/client.js";
+      s.setAttribute("data-repo", "Alexandra-Caceres-Ayala/evolucion");
+      s.setAttribute("data-repo-id", "R_kgDOTfCWSw");
+      s.setAttribute("data-category", "Comentarios");
+      s.setAttribute("data-category-id", "DIC_kwDOTfCWS84DBrlG");
+      s.setAttribute("data-mapping", "pathname");
+      s.setAttribute("data-strict", "0");
+      s.setAttribute("data-reactions-enabled", "1");
+      s.setAttribute("data-emit-metadata", "0");
+      s.setAttribute("data-input-position", "bottom");
+      s.setAttribute("data-theme", tema);
+      s.setAttribute("data-lang", "es");
+      s.crossOrigin = "anonymous";
+      s.async = true;
+      document.currentScript.parentNode.appendChild(s);
+    })();
   </script>
 </section>
--->
 {% endblock %}
