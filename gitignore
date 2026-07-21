@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Documento estratégico interno (misión/visión/monetización): local, no público
+Sistema Editorial de Inteligencia sobre Data Analytics..md
+
+# La web (docs/) y los boletines importados (boletines/) los reconstruye
+# el robot de GitHub Actions a partir de boletines-crudos/. No se suben.
+# Lo que SÍ se sube: boletines-crudos/ (crudos) y boletines-fijos/ (anuncios).
+docs/
+boletines/

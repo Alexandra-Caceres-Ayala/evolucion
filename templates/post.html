@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block contenido %}
+{% set es_anuncio = boletin.tipo == "Anuncio" %}
+<a class="volver" href="{{ raiz }}index.html">&larr; Todos los boletines</a>
+<article class="boletin{% if es_anuncio %} boletin-anuncio{% endif %}">
+  {% if es_anuncio %}
+  <canvas class="nodos-canvas" aria-hidden="true"></canvas>
+  <span class="insignia-anuncio">📌 Anuncio</span>
+  {% endif %}
+  <h1 data-pagefind-meta="title">{{ boletin.titulo }}</h1>
+  {% if not es_anuncio %}
+  <div class="meta">
+    {{ boletin.fecha_legible }} · {{ boletin.autor }}
+  </div>
+  {% endif %}
+  {% if boletin.etiquetas and not es_anuncio %}
+  <div class="chips">
+    {% for etiqueta in boletin.etiquetas %}<span class="chip">{{ etiqueta }}</span>{% endfor %}
+  </div>
+  {% endif %}
+  {% if boletin.tldr and not es_anuncio %}
+  <ul class="tldr">
+    {% for linea in boletin.tldr %}<li>{{ linea }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  {{ boletin.cuerpo_html | safe }}
+  {% if boletin.tipo == "Boletín diario" %}
+  <p class="nota-editorial">Se excluyen noticias sobre criptomonedas, trading, mercados bursátiles y economía general. Enfoque 100% técnico (ingeniería, visualización y análisis de datos).</p>
+  {% endif %}
+</article>
+{% if es_anuncio %}<script src="{{ raiz }}static/nodos.js" defer></script>{% endif %}
+<!--
+  Comentarios (Giscus / GitHub Discussions) — listo para activar.
+  Pasos pendientes en giscus.app, uno por uno:
+    1. El repo debe ser público en GitHub y tener Discussions activado
+       (Settings del repo -> Features -> Discussions).
+    2. Instalar la app de Giscus en el repo: https://github.com/apps/giscus
+    3. Rellenar el formulario en https://giscus.app con el repo y copiar
+       los valores data-repo-id / data-category-id que genera.
+    4. Descomentar el <script> de abajo y pegar esos valores.
+-->
+<!--
+<section class="comentarios">
+  <script src="https://giscus.app/client.js"
+    data-repo="ALEXANDRA/REPO-PENDIENTE"
+    data-repo-id="PENDIENTE"
+    data-category="Comentarios"
+    data-category-id="PENDIENTE"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="es"
+    crossorigin="anonymous"
+    async>
+  </script>
+</section>
+-->
+{% endblock %}

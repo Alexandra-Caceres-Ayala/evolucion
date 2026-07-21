@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ meta_titulo }}</title>
+<meta name="description" content="{{ meta_descripcion }}">
+<link rel="canonical" href="{{ url_canonica }}">
+<link rel="icon" href="{{ raiz }}static/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="EVOLUCIÓN" href="{{ raiz }}rss.xml">
+<meta property="og:type" content="{{ og_tipo | default('website') }}">
+<meta property="og:site_name" content="EVOLUCIÓN">
+<meta property="og:title" content="{{ meta_titulo }}">
+<meta property="og:description" content="{{ meta_descripcion }}">
+<meta property="og:url" content="{{ url_canonica }}">
+<meta property="og:image" content="{{ url_sitio }}static/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  (function () {
+    var tema = localStorage.getItem("tema");
+    if (tema) document.documentElement.dataset.theme = tema;
+  })();
+</script>
+<link rel="stylesheet" href="{{ raiz }}pagefind/pagefind-ui.css">
+<link rel="stylesheet" href="{{ raiz }}static/style.css?v={{ version_css }}">
+<script src="{{ raiz }}pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<header class="site">
+  <svg class="nodos-fondo" viewBox="0 0 800 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g stroke="var(--acento)" stroke-width="1" fill="none">
+      <line x1="40" y1="30" x2="150" y2="80" />
+      <line x1="150" y1="80" x2="120" y2="170" />
+      <line x1="150" y1="80" x2="280" y2="50" />
+      <line x1="280" y1="50" x2="390" y2="110" />
+      <line x1="390" y1="110" x2="330" y2="190" />
+      <line x1="390" y1="110" x2="520" y2="70" />
+      <line x1="520" y1="70" x2="650" y2="130" />
+      <line x1="650" y1="130" x2="760" y2="60" />
+      <line x1="650" y1="130" x2="600" y2="200" />
+      <line x1="280" y1="50" x2="230" y2="150" />
+    </g>
+    <g fill="var(--acento)">
+      <circle cx="40" cy="30" r="3" />
+      <circle cx="150" cy="80" r="3.5" />
+      <circle cx="120" cy="170" r="2.5" />
+      <circle cx="280" cy="50" r="3" />
+      <circle cx="390" cy="110" r="4" />
+      <circle cx="330" cy="190" r="2.5" />
+      <circle cx="520" cy="70" r="3" />
+      <circle cx="650" cy="130" r="3.5" />
+      <circle cx="760" cy="60" r="2.5" />
+      <circle cx="600" cy="200" r="2.5" />
+      <circle cx="230" cy="150" r="2.5" />
+    </g>
+  </svg>
+  <div class="site-cabecera">
+    <div class="cabecera-dos-columnas">
+      <div class="marca">
+        <h1><a href="{{ raiz }}index.html">Evolución</a></h1>
+        <p class="marca-subtitulo">Observatorio del Ecosistema del Dato</p>
+      </div>
+      <p class="cabecera-descripcion">Documentando, día a día, la evolución de Python, SQL, Power BI, IA y las tecnologías que están transformando la analítica de datos.</p>
+    </div>
+    <button id="interruptor-tema" type="button" aria-label="Cambiar entre modo claro y oscuro">🌓</button>
+  </div>
+  <div class="buscador-wrapper">
+    <svg class="nodos-buscador" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g stroke="var(--acento)" stroke-width="1" fill="none">
+        <line class="nodo-linea" x1="60" y1="40" x2="200" y2="110" />
+        <line class="nodo-linea" x1="200" y1="110" x2="150" y2="210" />
+        <line class="nodo-linea" x1="200" y1="110" x2="380" y2="60" />
+        <line class="nodo-linea" x1="380" y1="60" x2="520" y2="150" />
+        <line class="nodo-linea" x1="520" y1="150" x2="460" y2="230" />
+        <line class="nodo-linea" x1="520" y1="150" x2="680" y2="90" />
+        <line class="nodo-linea" x1="680" y1="90" x2="760" y2="190" />
+      </g>
+      <g fill="var(--acento)">
+        <circle class="nodo-punto d1" cx="60" cy="40" r="3" />
+        <circle class="nodo-punto d2" cx="200" cy="110" r="3.5" />
+        <circle class="nodo-punto d3" cx="150" cy="210" r="2.5" />
+        <circle class="nodo-punto d4" cx="380" cy="60" r="3" />
+        <circle class="nodo-punto d1" cx="520" cy="150" r="4" />
+        <circle class="nodo-punto d2" cx="460" cy="230" r="2.5" />
+        <circle class="nodo-punto d3" cx="680" cy="90" r="3" />
+        <circle class="nodo-punto d4" cx="760" cy="190" r="2.5" />
+      </g>
+    </svg>
+    <div id="buscador"></div>
+    <div class="sugerencias-busqueda" id="sugerencias-busqueda">
+      <span class="sugerencias-etiqueta">Prueba con:</span>
+      <button type="button" class="chip-sugerencia">Power BI</button>
+      <button type="button" class="chip-sugerencia">Claude</button>
+      <button type="button" class="chip-sugerencia">SQL</button>
+      <button type="button" class="chip-sugerencia">Pandas</button>
+      <button type="button" class="chip-sugerencia">IA</button>
+    </div>
+  </div>
+</header>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    new PagefindUI({ element: "#buscador", showSubResults: true, resetStyles: false });
+
+    var sugerencias = document.getElementById("sugerencias-busqueda");
+    setTimeout(function () {
+      var entrada = document.querySelector("#buscador .pagefind-ui__search-input");
+      if (!entrada) return;
+      entrada.addEventListener("focus", function () { sugerencias.classList.add("visible"); });
+      entrada.addEventListener("blur", function () {
+        setTimeout(function () { sugerencias.classList.remove("visible"); }, 150);
+      });
+      sugerencias.querySelectorAll(".chip-sugerencia").forEach(function (chip) {
+        chip.addEventListener("mousedown", function (evento) {
+          evento.preventDefault();
+          entrada.value = chip.textContent;
+          entrada.dispatchEvent(new Event("input", { bubbles: true }));
+          entrada.focus();
+        });
+      });
+    }, 300);
+  });
+  document.getElementById("interruptor-tema").addEventListener("click", () => {
+    var actual = document.documentElement.dataset.theme ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    var siguiente = actual === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = siguiente;
+    localStorage.setItem("tema", siguiente);
+  });
+</script>
+{% block grafico_destacado %}{% endblock %}
+<div class="layout">
+  <main data-pagefind-body>
+  {% block contenido %}{% endblock %}
+  </main>
+  <aside class="sidebar">
+    <div class="tarjeta sobre-mi">
+      <img src="{{ raiz }}static/perfil.png" alt="Alexandra Cáceres Ayala" class="foto-perfil">
+      <h2>Alexandra Cáceres Ayala</h2>
+      <p class="rol">Creadora de EVOLUCIÓN</p>
+      <p>Gracias por acompañar esta evolución.</p>
+      <a class="enlace-linkedin" href="https://linkedin.com/in/alexandra-caceres-ayala" target="_blank" rel="noopener noreferrer">Conecta en LinkedIn →</a>
+      <p class="nota-proximamente">Próximamente también en LinkedIn Newsletter y con botón de Sponsor en GitHub.</p>
+    </div>
+    {% block aside %}{% endblock %}
+  </aside>
+</div>
+<footer class="site">
+  © {{ anio_actual }} Alexandra Cáceres Ayala
+</footer>
+</body>
+</html>

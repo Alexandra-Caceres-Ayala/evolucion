@@ -1,0 +1,10 @@
+# Botón "Sponsor" en GitHub. Rellenar github: con tu usuario de
+# GitHub una vez tengas activado tu perfil en github.com/sponsors —
+# ese paso (verificación de identidad y datos bancarios) lo haces tú
+# directamente en GitHub, no se puede automatizar desde aquí.
+github: [PENDIENTE-usuario-github]
+
+# Opcional: descomentar si además quieres aceptar propinas por otras
+# vías (no hace falta elegir solo una).
+# ko_fi: PENDIENTE
+# custom: ["https://PENDIENTE"]

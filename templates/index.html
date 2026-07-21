@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block grafico_destacado %}
+{% if hay_grafico %}
+<details class="grafico-destacado">
+  <summary>
+    <span class="grafico-flecha" aria-hidden="true">▸</span>
+    <span class="grafico-titulo-texto">Herramientas más mencionadas</span>
+    <span class="grafico-hint" aria-hidden="true"></span>
+  </summary>
+  <div class="grafico-cuerpo">
+    <div id="grafico-interactivo-destacado"></div>
+    <p class="pie-grafico">Conteo de etiquetas en todos los boletines publicados. Clic en una barra para resaltar su tendencia; rueda del ratón para zoom.</p>
+  </div>
+</details>
+<script>
+  (function () {
+    var vista = null;
+    var renderizado = false;
+    var promesaScripts = null;
+    function temaActual() {
+      return document.documentElement.dataset.theme ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    }
+    // Los ~800 KB de Vega se cargan solo la primera vez que se abre el
+    // panel (no en la portada), en secuencia porque dependen entre sí.
+    function cargarScriptsVega() {
+      if (promesaScripts) return promesaScripts;
+      var urls = [
+        "{{ raiz }}static/vendor/vega.min.js",
+        "{{ raiz }}static/vendor/vega-lite.min.js",
+        "{{ raiz }}static/vendor/vega-embed.min.js",
+      ];
+      promesaScripts = urls.reduce(function (cadena, url) {
+        return cadena.then(function () {
+          return new Promise(function (resolver, rechazar) {
+            var s = document.createElement("script");
+            s.src = url;
+            s.onload = resolver;
+            s.onerror = rechazar;
+            document.head.appendChild(s);
+          });
+        });
+      }, Promise.resolve());
+      return promesaScripts;
+    }
+    // Renderiza el gráfico (asume que Vega ya está cargado).
+    function cargar(tema) {
+      return fetch("{{ raiz }}static/graficos/menciones-herramientas." + tema + ".json")
+        .then(function (r) { return r.json(); })
+        .then(function (spec) {
+          return vegaEmbed("#grafico-interactivo-destacado", spec, { actions: false, renderer: "svg" });
+        })
+        .then(function (resultado) { vista = resultado.view; });
+    }
+    document.getElementById("interruptor-tema").addEventListener("click", function () {
+      if (renderizado) setTimeout(function () { cargar(temaActual()); }, 0);
+    });
+
+    // Despliegue/repliegue suave: <details> nativo abre de golpe, así que
+    // animamos la altura del cuerpo a mano. Respeta prefers-reduced-motion.
+    var detalle = document.querySelector(".grafico-destacado");
+    var resumen = detalle.querySelector("summary");
+    var cuerpo = detalle.querySelector(".grafico-cuerpo");
+    var reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var DURACION = 450; // debe coincidir con la transición CSS de .grafico-cuerpo
+
+    function animar(desde, hasta, alCerrar) {
+      cuerpo.style.height = desde + "px";
+      // Forzar un reflow fija la altura inicial ANTES de cambiarla, para que
+      // el navegador vea una transición real en vez de saltar de golpe.
+      cuerpo.getBoundingClientRect();
+      cuerpo.style.height = hasta + "px";
+
+      var listo = false;
+      function finalizar(evento) {
+        if (evento && evento.target !== cuerpo) return; // ignora transiciones de hijos
+        if (listo) return;
+        listo = true;
+        cuerpo.removeEventListener("transitionend", finalizar);
+        cuerpo.style.height = "";
+        if (alCerrar) detalle.open = false;
+        delete detalle.dataset.animando;
+      }
+      cuerpo.addEventListener("transitionend", finalizar);
+      // Red de seguridad: si transitionend no llega (p. ej. pestaña oculta),
+      // cerramos el ciclo igualmente para no dejar el estado bloqueado.
+      setTimeout(finalizar, DURACION + 80);
+    }
+
+    function abrir() {
+      detalle.open = true;
+      if (!renderizado) {
+        renderizado = true;
+        cuerpo.style.height = "0px"; // evita el destello del texto antes del gráfico
+        cargarScriptsVega()
+          .then(function () { return cargar(temaActual()); })
+          .then(function () { animar(0, cuerpo.scrollHeight, false); });
+      } else {
+        animar(0, cuerpo.scrollHeight, false);
+      }
+    }
+
+    resumen.addEventListener("click", function (evento) {
+      if (reducir) {
+        if (!detalle.open && !renderizado) {
+          renderizado = true;
+          cargarScriptsVega().then(function () { return cargar(temaActual()); });
+        }
+        return; // sin animación: comportamiento nativo del <details>
+      }
+      evento.preventDefault();
+      if (detalle.dataset.animando) return;
+      detalle.dataset.animando = "1";
+      if (detalle.open) {
+        animar(cuerpo.scrollHeight, 0, true);
+      } else {
+        abrir();
+      }
+    });
+  })();
+</script>
+{% endif %}
+{% endblock %}
+{% block contenido %}
+{% for boletin in boletines %}
+{% set es_anuncio = boletin.tipo == "Anuncio" %}
+<article class="entrada-lista{% if es_anuncio %} entrada-anuncio{% endif %}">
+  {% if es_anuncio %}<span class="insignia-anuncio">📌 Anuncio</span>{% endif %}
+  <h2><a href="{{ raiz }}{{ boletin.url }}">{{ boletin.titulo }}</a></h2>
+  {% if not es_anuncio %}
+  <div class="meta">{{ boletin.fecha_legible }}</div>
+  <span class="kicker-lectura">Lectura del día</span>
+  {% endif %}
+  <p class="resumen">{{ boletin.resumen }}</p>
+  {% if boletin.etiquetas and not es_anuncio %}
+  <div class="chips">
+    {% for etiqueta in boletin.etiquetas %}<span class="chip">{{ etiqueta }}</span>{% endfor %}
+  </div>
+  {% endif %}
+</article>
+{% endfor %}
+{% if total_paginas > 1 %}
+<nav class="paginacion" aria-label="Paginación del archivo">
+  {% if pagina_actual > 1 %}
+  <a href="{{ raiz }}{{ 'index.html' if pagina_actual == 2 else 'index-' ~ (pagina_actual - 1) ~ '.html' }}" class="paginacion-extremo">← Anterior</a>
+  {% else %}
+  <span class="paginacion-extremo paginacion-deshabilitado">← Anterior</span>
+  {% endif %}
+  <span class="paginacion-numeros">
+    {% for pagina in paginas_visibles %}
+      {% if pagina is none %}
+      <span class="paginacion-puntos">…</span>
+      {% elif pagina == pagina_actual %}
+      <span class="paginacion-actual" aria-current="page">{{ pagina }}</span>
+      {% else %}
+      <a href="{{ raiz }}{{ 'index.html' if pagina == 1 else 'index-' ~ pagina ~ '.html' }}">{{ pagina }}</a>
+      {% endif %}
+    {% endfor %}
+  </span>
+  {% if pagina_actual < total_paginas %}
+  <a href="{{ raiz }}index-{{ pagina_actual + 1 }}.html" class="paginacion-extremo">Siguiente →</a>
+  {% else %}
+  <span class="paginacion-extremo paginacion-deshabilitado">Siguiente →</span>
+  {% endif %}
+</nav>
+{% endif %}
+{% endblock %}
