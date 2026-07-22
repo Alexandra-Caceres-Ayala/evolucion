@@ -439,6 +439,14 @@ main { min-width: 0; }
   margin: 0 !important;
 }
 
+.nota-proximamente a {
+  color: var(--acento);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nota-proximamente a:hover { text-decoration: underline; }
+
 .entrada-lista {
   border-bottom: 1px solid var(--borde);
   padding: 1.5rem 0;
