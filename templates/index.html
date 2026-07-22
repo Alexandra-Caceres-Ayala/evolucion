@@ -62,7 +62,7 @@
     var resumen = detalle.querySelector("summary");
     var cuerpo = detalle.querySelector(".grafico-cuerpo");
     var reducir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var DURACION = 450; // debe coincidir con la transición CSS de .grafico-cuerpo
+    var DURACION = 350; // debe coincidir con la transición CSS de .grafico-cuerpo
 
     function animar(desde, hasta, alCerrar) {
       cuerpo.style.height = desde + "px";

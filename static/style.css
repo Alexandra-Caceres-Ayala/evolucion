@@ -66,12 +66,46 @@ body {
 }
 
 header.site {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--fondo);
   max-width: var(--ancho-layout);
   margin: 0 auto;
   padding: 2.5rem 0 1.5rem;
   border-bottom: 3px solid var(--texto);
   overflow: hidden;
+  transition: padding 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Al hacer scroll, la cabecera se encoge a una barra delgada que mantiene
+   el nombre, los nodos y el buscador siempre visibles, sin comerse la
+   pantalla. La clase 'compacta' la activa un listener en base.html. */
+header.site.compacta {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  box-shadow: 0 6px 20px rgba(20, 23, 26, 0.1);
+}
+
+header.site.compacta .marca-subtitulo,
+header.site.compacta .cabecera-descripcion {
+  display: none;
+}
+
+header.site.compacta .cabecera-dos-columnas {
+  grid-template-columns: 1fr;
+}
+
+header.site.compacta h1 {
+  font-size: 1.8rem;
+}
+
+header.site.compacta .buscador-wrapper {
+  margin-top: 0.7rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header.site { transition: none; }
 }
 
 .nodos-fondo {
@@ -224,7 +258,7 @@ header.site h1 a {
 
 .grafico-cuerpo {
   overflow: hidden;
-  transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #grafico-interactivo-destacado {
