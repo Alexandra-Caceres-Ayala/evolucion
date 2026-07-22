@@ -56,6 +56,15 @@
 
 * { box-sizing: border-box; }
 
+/* El header (sticky) cambia de tamaño mientras se hace scroll, vía CSS
+   scroll-driven animations. El scroll anchoring del navegador intenta
+   compensar esos cambios de tamaño reajustando la posición de scroll,
+   entrando en conflicto con la propia animación. Se desactiva a nivel
+   de documento para que el scroll sea una entrada estable y predecible. */
+html {
+  overflow-anchor: none;
+}
+
 body {
   margin: 0;
   padding: 0 1.25rem;
@@ -75,37 +84,93 @@ header.site {
   padding: 2.5rem 0 1.5rem;
   border-bottom: 3px solid var(--texto);
   overflow: hidden;
-  transition: padding 0.25s ease, box-shadow 0.25s ease;
+
+  animation: compactar-cabecera linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 0px 120px;
 }
 
-/* Al hacer scroll, la cabecera se encoge a una barra delgada que mantiene
-   el nombre, los nodos y el buscador siempre visibles, sin comerse la
-   pantalla. La clase 'compacta' la activa un listener en base.html. */
-header.site.compacta {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  box-shadow: 0 6px 20px rgba(20, 23, 26, 0.1);
+/* Cabecera que se compacta suavemente al bajar: mantiene nombre, nodos
+   y buscador siempre a la vista sin ocupar tanto espacio. Usa CSS
+   scroll-driven animations para transiciones suaves sin JavaScript. */
+@keyframes compactar-cabecera {
+  0% {
+    padding-top: 2.5rem;
+    padding-bottom: 1.5rem;
+    box-shadow: 0 6px 20px rgba(20, 23, 26, 0);
+  }
+  100% {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    box-shadow: 0 6px 20px rgba(20, 23, 26, 0.1);
+  }
 }
 
-header.site.compacta .marca-subtitulo,
-header.site.compacta .cabecera-descripcion {
-  display: none;
+.marca-subtitulo,
+.cabecera-descripcion {
+  overflow: hidden;
+  animation: desvanecerse-cabecera linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 50px 120px;
 }
 
-header.site.compacta .cabecera-dos-columnas {
-  grid-template-columns: 1fr;
+@keyframes desvanecerse-cabecera {
+  0% {
+    opacity: 1;
+    max-height: 8rem;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    margin: 0;
+    padding-bottom: 0;
+    border-bottom-width: 0;
+  }
 }
 
-header.site.compacta h1 {
-  font-size: 1.8rem;
+.cabecera-dos-columnas {
+  animation: ajustar-columnas-cabecera linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 0px 120px;
 }
 
-header.site.compacta .buscador-wrapper {
-  margin-top: 0.7rem;
+@keyframes ajustar-columnas-cabecera {
+  0% { grid-template-columns: 1fr 1fr; }
+  100% { grid-template-columns: 1fr; }
+}
+
+header.site h1 {
+  animation: reducir-titulo linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 0px 120px;
+}
+
+@keyframes reducir-titulo {
+  0% { font-size: 3rem; }
+  100% { font-size: 1.8rem; }
+}
+
+.buscador-wrapper {
+  animation: ajustar-buscador linear forwards;
+  animation-timeline: scroll(root);
+  animation-range: 0px 120px;
+}
+
+@keyframes ajustar-buscador {
+  0% { margin-top: 1.1rem; }
+  100% { margin-top: 0.7rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  header.site { transition: none; }
+  header.site,
+  .marca-subtitulo,
+  .cabecera-descripcion,
+  .cabecera-dos-columnas,
+  header.site h1,
+  .buscador-wrapper {
+    animation: none;
+  }
 }
 
 .nodos-fondo {
