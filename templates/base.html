@@ -138,18 +138,6 @@
       );
     }
   });
-
-  // Cabecera fija que se compacta al bajar: mantiene nombre, nodos y buscador
-  // siempre a la vista sin ocupar tanto espacio como la cabecera completa.
-  (function () {
-    var cabecera = document.querySelector("header.site");
-    if (!cabecera) return;
-    function alHacerScroll() {
-      cabecera.classList.toggle("compacta", window.scrollY > 120);
-    }
-    window.addEventListener("scroll", alHacerScroll, { passive: true });
-    alHacerScroll();
-  })();
 </script>
 {% block grafico_destacado %}{% endblock %}
 <div class="layout">
