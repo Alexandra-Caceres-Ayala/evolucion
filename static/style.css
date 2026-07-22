@@ -75,19 +75,13 @@ body {
 }
 
 header.site {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  position: relative;
   background: var(--fondo);
   max-width: var(--ancho-layout);
   margin: 0 auto;
   padding: 2.5rem 0 1.5rem;
   border-bottom: 3px solid var(--texto);
   overflow: hidden;
-
-  animation: compactar-cabecera linear forwards;
-  animation-timeline: scroll(root);
-  animation-range: 0px 120px;
 }
 
 /* Cabecera que se compacta suavemente al bajar: mantiene nombre, nodos
@@ -106,12 +100,45 @@ header.site {
   }
 }
 
-.marca-subtitulo,
-.cabecera-descripcion {
-  overflow: hidden;
-  animation: desvanecerse-cabecera linear forwards;
-  animation-timeline: scroll(root);
-  animation-range: 50px 120px;
+/* Las animaciones de compactado solo aplican en pantallas anchas: en el
+   móvil la cabecera no se fija (ocuparía media pantalla) y, sobre todo,
+   una animación con "forwards" gana a la regla responsive de una sola
+   columna y rompía el diseño (título montado sobre la descripción). */
+@media (min-width: 701px) {
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    animation: compactar-cabecera linear forwards;
+    animation-timeline: scroll(root);
+    animation-range: 0px 120px;
+  }
+
+  .marca-subtitulo,
+  .cabecera-descripcion {
+    overflow: hidden;
+    animation: desvanecerse-cabecera linear forwards;
+    animation-timeline: scroll(root);
+    animation-range: 50px 120px;
+  }
+
+  .cabecera-dos-columnas {
+    animation: ajustar-columnas-cabecera linear forwards;
+    animation-timeline: scroll(root);
+    animation-range: 0px 120px;
+  }
+
+  header.site h1 {
+    animation: reducir-titulo linear forwards;
+    animation-timeline: scroll(root);
+    animation-range: 0px 120px;
+  }
+
+  .buscador-wrapper {
+    animation: ajustar-buscador linear forwards;
+    animation-timeline: scroll(root);
+    animation-range: 0px 120px;
+  }
 }
 
 @keyframes desvanecerse-cabecera {
@@ -129,32 +156,14 @@ header.site {
   }
 }
 
-.cabecera-dos-columnas {
-  animation: ajustar-columnas-cabecera linear forwards;
-  animation-timeline: scroll(root);
-  animation-range: 0px 120px;
-}
-
 @keyframes ajustar-columnas-cabecera {
   0% { grid-template-columns: 1fr 1fr; }
   100% { grid-template-columns: 1fr; }
 }
 
-header.site h1 {
-  animation: reducir-titulo linear forwards;
-  animation-timeline: scroll(root);
-  animation-range: 0px 120px;
-}
-
 @keyframes reducir-titulo {
   0% { font-size: 3rem; }
   100% { font-size: 1.8rem; }
-}
-
-.buscador-wrapper {
-  animation: ajustar-buscador linear forwards;
-  animation-timeline: scroll(root);
-  animation-range: 0px 120px;
 }
 
 @keyframes ajustar-buscador {
