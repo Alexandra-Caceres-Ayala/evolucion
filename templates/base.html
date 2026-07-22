@@ -60,7 +60,7 @@
   <div class="site-cabecera">
     <div class="cabecera-dos-columnas">
       <div class="marca">
-        <h1><a href="{{ raiz }}index.html">Evolución</a></h1>
+        <h1><a href="{{ raiz or './' }}">Evolución</a></h1>
         <p class="marca-subtitulo">Observatorio del Ecosistema del Dato</p>
       </div>
       <p class="cabecera-descripcion">Documentando, día a día, la evolución de Python, SQL, Power BI, IA y las tecnologías que están transformando la analítica de datos.</p>
@@ -151,7 +151,8 @@
       <p class="rol">Creadora de EVOLUCIÓN</p>
       <p>Gracias por acompañar esta evolución.</p>
       <a class="enlace-linkedin" href="https://linkedin.com/in/alexandra-caceres-ayala" target="_blank" rel="noopener noreferrer">Conecta en LinkedIn →</a>
-      <p class="nota-proximamente">Próximamente también en LinkedIn Newsletter y con botón de Sponsor en GitHub.</p>
+      <a class="boton-mecenas" href="https://ko-fi.com/evolucion" target="_blank" rel="noopener noreferrer">✦ Sé mecenas de EVOLUCIÓN</a>
+      <p class="nota-proximamente">Próximamente también en LinkedIn Newsletter y con GitHub Sponsors.</p>
     </div>
     {% block aside %}{% endblock %}
   </aside>

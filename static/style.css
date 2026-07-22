@@ -308,6 +308,31 @@ main { min-width: 0; }
 
 .enlace-linkedin:hover { text-decoration: underline; }
 
+.boton-mecenas {
+  display: block;
+  font-family: var(--fuente-titulos);
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--acento) 0%, var(--acento-2) 100%);
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.9rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.boton-mecenas:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--acento-2) 40%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton-mecenas { transition: none; }
+  .boton-mecenas:hover { transform: none; }
+}
+
 .nota-proximamente {
   font-size: 0.75rem !important;
   border-top: 1px solid var(--borde);

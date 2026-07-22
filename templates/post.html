@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block contenido %}
 {% set es_anuncio = boletin.tipo == "Anuncio" %}
-<a class="volver" href="{{ raiz }}index.html">&larr; Todos los boletines</a>
+<a class="volver" href="{{ raiz or './' }}">&larr; Todos los boletines</a>
 <article class="boletin{% if es_anuncio %} boletin-anuncio{% endif %}">
   {% if es_anuncio %}
   <canvas class="nodos-canvas" aria-hidden="true"></canvas>

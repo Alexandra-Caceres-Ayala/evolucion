@@ -142,7 +142,7 @@
 {% if total_paginas > 1 %}
 <nav class="paginacion" aria-label="Paginación del archivo">
   {% if pagina_actual > 1 %}
-  <a href="{{ raiz }}{{ 'index.html' if pagina_actual == 2 else 'index-' ~ (pagina_actual - 1) ~ '.html' }}" class="paginacion-extremo">← Anterior</a>
+  <a href="{{ raiz }}{{ './' if pagina_actual == 2 else 'index-' ~ (pagina_actual - 1) ~ '.html' }}" class="paginacion-extremo">← Anterior</a>
   {% else %}
   <span class="paginacion-extremo paginacion-deshabilitado">← Anterior</span>
   {% endif %}
@@ -153,7 +153,7 @@
       {% elif pagina == pagina_actual %}
       <span class="paginacion-actual" aria-current="page">{{ pagina }}</span>
       {% else %}
-      <a href="{{ raiz }}{{ 'index.html' if pagina == 1 else 'index-' ~ pagina ~ '.html' }}">{{ pagina }}</a>
+      <a href="{{ raiz }}{{ './' if pagina == 1 else 'index-' ~ pagina ~ '.html' }}">{{ pagina }}</a>
       {% endif %}
     {% endfor %}
   </span>
