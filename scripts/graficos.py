@@ -5,12 +5,12 @@ Sustituye a la versión estática de matplotlib: a cambio de cargar
 static/vendor/ para no depender de un CDN externo), el lector puede
 pasar el ratón para ver el detalle exacto, hacer clic en una barra
 del ranking para resaltar su tendencia en el tiempo, y hacer zoom/pan
-sobre el eje de fechas. Decisión tomada explícitamente con Alexandra:
-prioriza interactividad sobre el peso de página para esta pieza.
+sobre el eje de fechas. Decisión de diseño deliberada: priorizar la
+interactividad sobre el peso de página para esta pieza.
 
 El gráfico ocupa el ancho completo bajo la cabecera (width="container"),
-no una tarjeta estrecha en el sidebar -- también decisión de Alexandra
-al pedir más protagonismo visual para esta pieza.
+no una tarjeta estrecha en el sidebar -- para darle a esta pieza el
+protagonismo visual que merece como corazón analítico del sitio.
 """
 
 import re
@@ -23,7 +23,7 @@ from importar_boletin import ETIQUETAS_RECONOCIDAS, NOMBRE_VISIBLE
 COLOR_APAGADO = "#c7d3de"
 
 # Degradado sutil del azul del sitio hacia un violeta apagado: un
-# guiño a la paleta rosa/púrpura del portafolio de Alexandra sin
+# guiño a la paleta rosa/púrpura de mi portafolio personal sin
 # copiarla literalmente (mantiene la gama fría del boletín).
 DEGRADADO_BARRA = alt.Gradient(
     gradient="linear",

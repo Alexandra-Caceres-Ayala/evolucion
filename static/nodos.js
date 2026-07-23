@@ -1,7 +1,7 @@
 /*
  * Red de nodos animada para la sección de bienvenida (el "anuncio").
- * Réplica ligera y propia del efecto de partículas del portafolio de
- * Alexandra (que usa tsParticles, ~200 KB) escrita en ~70 líneas de
+ * Réplica ligera y propia del efecto de partículas de mi portafolio
+ * personal (que usa tsParticles, ~200 KB) escrita en ~70 líneas de
  * canvas puro, sin librerías externas. Nodos a la deriva que se conectan
  * con líneas cuando están cerca, con un brillo tenue que palpita.
  * Respeta prefers-reduced-motion (dibuja un solo fotograma estático).

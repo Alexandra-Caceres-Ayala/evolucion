@@ -28,8 +28,9 @@ RAIZ_PROYECTO = Path(__file__).resolve().parent.parent
 DIR_BOLETINES = RAIZ_PROYECTO / "boletines"
 
 # De dónde se leen los boletines crudos (los que produce la skill).
-# En el repo/CI existe "boletines-crudos/" (lo que sube Alexandra por el
-# navegador); en el Mac, si no existe, se usa la carpeta de la skill.
+# En el repo/CI existe "boletines-crudos/" (lo que llega al repositorio
+# con la subida automática diaria); en local, si no existe, se usa la
+# carpeta donde se generan los boletines.
 _CRUDOS_REPO = RAIZ_PROYECTO / "boletines-crudos"
 DIR_ORIGEN = _CRUDOS_REPO if _CRUDOS_REPO.exists() else (RAIZ_PROYECTO.parent / "Noticias Data Analytics")
 
