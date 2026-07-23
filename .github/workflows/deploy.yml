@@ -1,7 +1,7 @@
 name: Construir y publicar EVOLUCIÓN
 
 # Se ejecuta solo cada vez que cambia algo en el repositorio (por ejemplo,
-# cuando Alexandra sube un boletín nuevo por el navegador) y también a mano
+# cuando llega un boletin diario de la subida automática) y tambien a mano
 # desde la pestaña Actions. Reconstruye la web y la publica en GitHub Pages.
 on:
   push:
