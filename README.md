@@ -67,12 +67,12 @@ El proyecto está diseñado como un pipeline de datos: cada edición pasa por la
 ## 🗂️ Estructura del proyecto
 
 ```
-boletines-crudos/   boletines diarios tal como los genera la skill (fuente de verdad)
+boletines-crudos/   boletines diarios tal como se generan cada mañana (fuente de verdad)
 boletines-fijos/    contenido escrito a mano (p. ej. el anuncio de bienvenida)
 boletines/          generado por importar_boletin.py — no editar a mano
 templates/          plantillas Jinja2 (HTML)
 static/             CSS, JS e imágenes del sitio
-scripts/            importar_boletin.py + generate_site.py
+scripts/            importar_boletin.py · generate_site.py · subir_boletin_github.py · generar_portada_linkedin.py
 docs/               salida generada, servida por GitHub Pages — no editar a mano
 ```
 
@@ -80,11 +80,20 @@ docs/               salida generada, servida por GitHub Pages — no editar a ma
 
 ## 📤 Cómo se publica
 
-No hay `git push` local: este repositorio no está conectado a ningún equipo en particular. Todo pasa por GitHub Actions (`.github/workflows/deploy.yml`):
+El ciclo diario es automático de extremo a extremo — no hay `git push` local ni pasos manuales:
 
-1. Un boletín nuevo llega a `boletines-crudos/`.
-2. GitHub Actions se dispara solo con ese cambio: instala las dependencias, corre `importar_boletin.py` (traduce el crudo al formato con frontmatter) y luego `generate_site.py` (construye `docs/` entero: HTML, buscador, sitemap, RSS, imagen Open Graph).
-3. Publica `docs/` en GitHub Pages.
+1. **Cada mañana a las 11:00**, un agente programado con `launchd` (el programador nativo de macOS) genera el boletín del día con IA en modo desatendido, siguiendo una plantilla editorial estricta (secciones, filtro temático y fuente oficial obligatoria en cada noticia).
+2. El mismo agente lo sube a `boletines-crudos/` mediante la **API de GitHub** (`scripts/subir_boletin_github.py`) — idempotente: si un día quedó pendiente, la siguiente corrida se pone al día sola.
+3. **GitHub Actions** (`.github/workflows/deploy.yml`) se dispara con el cambio: corre `importar_boletin.py` (traduce el crudo al formato con frontmatter) y `generate_site.py` (construye `docs/` entero: HTML, buscador, gráfico de tendencias, sitemap, RSS, imagen Open Graph).
+4. Publica `docs/` en GitHub Pages.
+
+Además, cada semana se publica un **resumen en LinkedIn** ([suscríbete aquí](https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7485707534079672322)), con su portada de marca generada por `scripts/generar_portada_linkedin.py`.
+
+---
+
+## ☕ Apoya el proyecto
+
+Si EVOLUCIÓN te aporta valor, puedes apoyarlo en [Ko-fi](https://ko-fi.com/evolucion) — cada aporte ayuda a dedicarle el tiempo y el cuidado que merece. ✦
 
 ---
 
