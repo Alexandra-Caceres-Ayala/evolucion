@@ -108,7 +108,15 @@ def construir_grafico(boletines: list[dict]) -> dict | None:
         f"Tendencia (últimos {DIAS_TENDENCIA} días)" if hubo_recorte else "Tendencia en el tiempo"
     )
 
-    seleccion = alt.selection_point(fields=["herramienta"], on="click", empty=True, clear="dblclick", name="elegido")
+    # Arranca con la herramienta más mencionada ya seleccionada. Sin esto, la
+    # evolución pinta sus 14 series del mismo azul y a opacidad plena, y el
+    # resultado es un ovillo del que no se lee nada. Con una preseleccionada
+    # se entra viendo una línea legible y el resto queda de fondo.
+    lider = ranking.sort_values("menciones", ascending=False).iloc[0]["herramienta"]
+    seleccion = alt.selection_point(
+        fields=["herramienta"], on="click", empty=True, clear="dblclick",
+        value=[{"herramienta": lider}], name="elegido",
+    )
     zoom = alt.selection_interval(bind="scales", encodings=["x"])
 
     barras = (
