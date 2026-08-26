@@ -87,25 +87,27 @@
       setTimeout(finalizar, DURACION + 80);
     }
 
+    // Carga Vega y dibuja el gráfico, una sola vez. Con `conAnimacion` el
+    // cuerpo se revela desplegándose; sin ella el gráfico solo aparece.
+    function renderizarUnaVez(conAnimacion) {
+      if (renderizado) return;
+      renderizado = true;
+      if (conAnimacion) cuerpo.style.height = "0px"; // evita el destello del pie
+      cargarScriptsVega()
+        .then(function () { return cargar(temaActual()); })
+        .then(function () { if (conAnimacion) animar(0, cuerpo.scrollHeight, false); })
+        .catch(function () { cuerpo.style.height = ""; });
+    }
+
     function abrir() {
       detalle.open = true;
-      if (!renderizado) {
-        renderizado = true;
-        cuerpo.style.height = "0px"; // evita el destello del texto antes del gráfico
-        cargarScriptsVega()
-          .then(function () { return cargar(temaActual()); })
-          .then(function () { animar(0, cuerpo.scrollHeight, false); });
-      } else {
-        animar(0, cuerpo.scrollHeight, false);
-      }
+      if (renderizado) animar(0, cuerpo.scrollHeight, false);
+      else renderizarUnaVez(true);
     }
 
     resumen.addEventListener("click", function (evento) {
       if (reducir) {
-        if (!detalle.open && !renderizado) {
-          renderizado = true;
-          cargarScriptsVega().then(function () { return cargar(temaActual()); });
-        }
+        if (!detalle.open) renderizarUnaVez(false);
         return; // sin animación: comportamiento nativo del <details>
       }
       evento.preventDefault();
@@ -119,18 +121,8 @@
     });
 
     // El panel se sirve ya desplegado (atributo `open`), así que el gráfico
-    // hay que pedirlo al cargar; antes solo se pedía en el primer clic. Se
-    // revela con la misma animación que una apertura manual para no enseñar
-    // el pie suelto mientras llega Vega. Si la carga falla, se libera la
-    // altura para que al menos se vea el pie en vez de un hueco vacío.
-    if (detalle.open) {
-      renderizado = true;
-      if (!reducir) cuerpo.style.height = "0px";
-      cargarScriptsVega()
-        .then(function () { return cargar(temaActual()); })
-        .then(function () { if (!reducir) animar(0, cuerpo.scrollHeight, false); })
-        .catch(function () { cuerpo.style.height = ""; });
-    }
+    // hay que pedirlo al cargar; antes solo se pedía en el primer clic.
+    if (detalle.open) renderizarUnaVez(!reducir);
   })();
 </script>
 {% endif %}
