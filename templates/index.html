@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block grafico_destacado %}
 {% if hay_grafico %}
-<details class="grafico-destacado" open>
+<details class="grafico-destacado">
   <summary>
     <span class="grafico-flecha" aria-hidden="true">▸</span>
     <span class="grafico-titulo-texto">Herramientas más mencionadas</span>
@@ -120,9 +120,15 @@
       }
     });
 
-    // El panel se sirve ya desplegado (atributo `open`), así que el gráfico
-    // hay que pedirlo al cargar; antes solo se pedía en el primer clic.
-    if (detalle.open) renderizarUnaVez(!reducir);
+    // El panel se sirve plegado y solo se abre solo en pantallas anchas. En
+    // el móvil mide más de una pantalla de alto y dejaría los boletines a
+    // pantalla y media del principio, así que ahí se abre a petición: quien
+    // no lo abra tampoco descarga Vega. Mismo corte de 701 px que la
+    // cabecera. Sin JavaScript se queda plegado, que es el estado seguro.
+    if (window.matchMedia("(min-width: 701px)").matches) {
+      detalle.open = true;
+      renderizarUnaVez(!reducir);
+    }
   })();
 </script>
 {% endif %}
