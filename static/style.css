@@ -21,6 +21,7 @@
   --borde: #e5e5e5;
   --acento: #0a4d8c;
   --acento-2: #6a4c93;
+  --borde-foto: var(--acento);
   --ancho: 680px;
   --ancho-layout: 1080px;
   --fuente-titulos: "Space Grotesk", Helvetica, Arial, sans-serif;
@@ -42,6 +43,7 @@
   --gris: #9a9a9a;
   --borde: #2c2f33;
   --acento: #6ea8e0;
+  --borde-foto: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -51,6 +53,7 @@
     --gris: #9a9a9a;
     --borde: #2c2f33;
     --acento: #6ea8e0;
+    --borde-foto: #ffffff;
   }
 }
 
@@ -390,6 +393,7 @@ main { min-width: 0; }
   width: 76px;
   height: 76px;
   border-radius: 999px;
+  border: 2px solid var(--borde-foto);
   object-fit: cover;
   margin: 0 auto 0.75rem;
 }
