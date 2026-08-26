@@ -385,8 +385,17 @@ header.site h1 a {
 .grafico-hint::after { content: "Ver gráfico interactivo →"; }
 .grafico-destacado[open] .grafico-hint::after { content: "Ocultar"; }
 
+/* A 375 px la pista junto al título pediría 431 px y solo hay 298, así que
+   baja a su propia línea en vez de desaparecer. Antes se ocultaba, y no
+   pasaba nada porque el panel venía desplegado; ahora en móvil está plegado
+   y la flecha sola no basta para que se note que dentro hay un gráfico. */
 @media (max-width: 560px) {
-  .grafico-hint { display: none; }
+  .grafico-destacado summary { flex-wrap: wrap; }
+
+  .grafico-hint {
+    flex-basis: 100%;
+    padding-left: 1.1rem; /* alinea con el título: flecha (9px) + hueco */
+  }
 }
 
 .grafico-destacado summary:hover {
