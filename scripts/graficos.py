@@ -22,6 +22,9 @@ from importar_boletin import ETIQUETAS_RECONOCIDAS, NOMBRE_VISIBLE
 
 COLOR_APAGADO = "#c7d3de"
 
+# Días que abarca el gráfico de evolución. El ranking usa todo el archivo.
+DIAS_TENDENCIA = 30
+
 # Degradado sutil del azul del sitio hacia un violeta apagado: un
 # guiño a la paleta rosa/púrpura de mi portafolio personal sin
 # copiarla literalmente (mantiene la gama fría del boletín).
@@ -92,6 +95,19 @@ def construir_grafico(boletines: list[dict]) -> dict | None:
     ranking = df.groupby("herramienta", as_index=False)["menciones"].sum()
     tendencia = df.groupby(["fecha", "herramienta"], as_index=False)["menciones"].sum()
 
+    # La tendencia se acota a una ventana reciente. Con el archivo entero cada
+    # día nuevo estrecha el eje X y no se recupera solo: en un móvil ya salían
+    # 5,7 px por fecha (44 fechas en ~250 px útiles), una maraña ilegible. El
+    # ranking de barras SÍ sigue contando todo el archivo: la ventana es solo
+    # para la evolución.
+    fechas_totales = df["fecha"].nunique()
+    corte = df["fecha"].max() - pd.Timedelta(days=DIAS_TENDENCIA - 1)
+    tendencia = tendencia[tendencia["fecha"] >= corte]
+    hubo_recorte = tendencia["fecha"].nunique() < fechas_totales
+    titulo_tendencia = (
+        f"Tendencia (últimos {DIAS_TENDENCIA} días)" if hubo_recorte else "Tendencia en el tiempo"
+    )
+
     seleccion = alt.selection_point(fields=["herramienta"], on="click", empty=True, clear="dblclick", name="elegido")
     zoom = alt.selection_interval(bind="scales", encodings=["x"])
 
@@ -130,7 +146,7 @@ def construir_grafico(boletines: list[dict]) -> dict | None:
             ],
         )
         .add_params(zoom)
-        .properties(width="container", height=220, title="Tendencia en el tiempo")
+        .properties(width="container", height=220, title=titulo_tendencia)
     )
 
     combinado = alt.vconcat(barras, linea).resolve_scale(color="independent")
