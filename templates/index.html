@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block grafico_destacado %}
 {% if hay_grafico %}
-<details class="grafico-destacado">
+<details class="grafico-destacado" open>
   <summary>
     <span class="grafico-flecha" aria-hidden="true">▸</span>
     <span class="grafico-titulo-texto">Herramientas más mencionadas</span>
@@ -117,6 +117,20 @@
         abrir();
       }
     });
+
+    // El panel se sirve ya desplegado (atributo `open`), así que el gráfico
+    // hay que pedirlo al cargar; antes solo se pedía en el primer clic. Se
+    // revela con la misma animación que una apertura manual para no enseñar
+    // el pie suelto mientras llega Vega. Si la carga falla, se libera la
+    // altura para que al menos se vea el pie en vez de un hueco vacío.
+    if (detalle.open) {
+      renderizado = true;
+      if (!reducir) cuerpo.style.height = "0px";
+      cargarScriptsVega()
+        .then(function () { return cargar(temaActual()); })
+        .then(function () { if (!reducir) animar(0, cuerpo.scrollHeight, false); })
+        .catch(function () { cuerpo.style.height = ""; });
+    }
   })();
 </script>
 {% endif %}

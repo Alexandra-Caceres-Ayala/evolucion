@@ -174,6 +174,67 @@ header.site {
   100% { margin-top: 0.7rem; }
 }
 
+/* En movil la cabecera tambien se fija, pero solo si el navegador sabe
+   compactarla: a tamano completo mide 365 px (casi media pantalla) y fijarla
+   asi taparia el contenido. De ahi el @supports, que deja fuera a los
+   navegadores sin animaciones ligadas al scroll (Safari anterior al 26).
+
+   OJO: aqui NO se anima .cabecera-dos-columnas. En movil esa rejilla es de
+   una sola columna por regla responsive, y una animacion con "forwards" gana
+   a esa regla en la cascada: volveria a dos columnas y montaria el titulo
+   sobre la descripcion. El compactado de movil es mas agresivo que el de
+   escritorio (titulo a 1.5rem) para que la barra fija quede en ~115 px. */
+@media (max-width: 700px) {
+  @supports (animation-timeline: scroll(root)) {
+    header.site {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      animation: compactar-cabecera-movil linear forwards;
+      animation-timeline: scroll(root);
+      animation-range: 0px 100px;
+    }
+
+    .marca-subtitulo,
+    .cabecera-descripcion {
+      overflow: hidden;
+      animation: desvanecerse-cabecera linear forwards;
+      animation-timeline: scroll(root);
+      animation-range: 0px 90px;
+    }
+
+    header.site h1 {
+      animation: reducir-titulo-movil linear forwards;
+      animation-timeline: scroll(root);
+      animation-range: 0px 100px;
+    }
+  }
+}
+
+@keyframes compactar-cabecera-movil {
+  0% {
+    padding-top: 2.5rem;
+    padding-bottom: 1.5rem;
+    box-shadow: 0 6px 20px rgba(20, 23, 26, 0);
+  }
+  100% {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    box-shadow: 0 6px 20px rgba(20, 23, 26, 0.12);
+  }
+}
+
+@keyframes reducir-titulo-movil {
+  0% { font-size: 3rem; }
+  100% { font-size: 1.5rem; }
+}
+
+/* Sin compactado no hay cabecera fija que valga en movil: se renuncia a
+   fijarla antes que tapar media pantalla con ella. */
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  header.site { position: relative; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   header.site,
   .marca-subtitulo,
