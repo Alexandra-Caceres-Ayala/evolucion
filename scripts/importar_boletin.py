@@ -118,6 +118,62 @@ def extraer_resumen(cuerpo: str) -> str:
     return resumen
 
 
+# --- Normalización de formato -------------------------------------------
+# La IA que redacta el boletín no siempre repite el mismo formato. Estas dos
+# funciones llevan cualquier variante al formato canónico de la web (el de
+# los boletines hasta el 30 de septiembre): un párrafo por noticia, con el
+# titular en negrita y la fuente en la línea siguiente.
+
+# Bloque de cita (líneas que empiezan por ">") que es una nota editorial del
+# generador ("Nota de transparencia...", etc.). La web ya muestra su propio
+# aviso fijo, y el CSS pinta las citas como un titular enorme y centrado.
+PATRON_BLOQUE_CITA = re.compile(r"(?:^[ \t]*>.*(?:\n|$))+", re.MULTILINE)
+PATRON_CITA_NOTA = re.compile(
+    r"nota|transparencia|fecha estricta|[uú]ltimas 24 horas", re.IGNORECASE
+)
+PATRON_FUENTE_HIJA = re.compile(r"^(?:Fuente:?\s*)?(https?://\S+)$", re.IGNORECASE)
+
+
+def quitar_notas_en_cita(cuerpo: str) -> str:
+    """Elimina los bloques de cita que son notas del generador."""
+    def decidir(coincidencia: re.Match) -> str:
+        bloque = coincidencia.group(0)
+        return "" if PATRON_CITA_NOTA.search(bloque) else bloque
+
+    return PATRON_BLOQUE_CITA.sub(decidir, cuerpo)
+
+
+def aplanar_vinetas(cuerpo: str) -> str:
+    """Convierte "- **Titular.**" + sub-viñetas en un solo párrafo de viñeta,
+    dejando la URL de la fuente en su propia línea justo debajo."""
+    lineas = cuerpo.splitlines()
+    salida: list[str] = []
+    i = 0
+    while i < len(lineas):
+        linea = lineas[i]
+        if re.match(r"^- \S", linea):
+            j = i + 1
+            hijos: list[str] = []
+            while j < len(lineas) and re.match(r"^[ \t]+[-*] \S", lineas[j]):
+                hijos.append(re.sub(r"^[ \t]+[-*]\s+", "", lineas[j]).strip())
+                j += 1
+            if hijos:
+                textos, fuentes = [], []
+                for hijo in hijos:
+                    m = PATRON_FUENTE_HIJA.match(hijo)
+                    if m:
+                        fuentes.append(m.group(1))
+                    else:
+                        textos.append(hijo if hijo[-1] in ".!?:;)" else hijo + ".")
+                salida.append((linea.rstrip() + " " + " ".join(textos)).rstrip())
+                salida.extend(f"  Fuente: {url}" for url in fuentes)
+                i = j
+                continue
+        salida.append(linea)
+        i += 1
+    return "\n".join(salida)
+
+
 def limpiar_cuerpo(texto: str) -> str:
     lineas = texto.strip().splitlines()
 
@@ -137,6 +193,10 @@ def limpiar_cuerpo(texto: str) -> str:
     # Quita la nota editorial repetida: ahora vive en la plantilla.
     cuerpo = PATRON_NOTA_FILTRO.sub("", cuerpo).strip()
     cuerpo = cuerpo.rstrip("-").strip()
+
+    # Normaliza el formato: sin notas en cita y con un párrafo por noticia.
+    cuerpo = quitar_notas_en_cita(cuerpo).strip()
+    cuerpo = aplanar_vinetas(cuerpo)
 
     # Convierte URLs sueltas en enlaces Markdown reales.
     cuerpo = PATRON_URL_SUELTA.sub(r"\1[Fuente](\2)", cuerpo)
